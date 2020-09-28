@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -46,64 +46,33 @@ namespace Millionare.Model
             });
         }
 
-        public (string First, string Second) Get2IncorrectAnswers(int correctAnswer)
+        public (string First, string Second) Get2IncorrectAnswers()
         {
             int first, second;
-            int tmp;
-            Random random = new Random();
-            string firstToReturn = "", secondToReturn = "";
+            int correctAnswer = CurrentLevel.CurrentQuestion.IndexOfCorrectAnswer;
 
-            tmp = random.Next(1, 5);
+            var DictionaryToReturn = new Dictionary<int, string>();
 
-            while (tmp == correctAnswer)
-            {
-                tmp = random.Next(1, 5);
-            }
-            first = tmp;
+            DictionaryToReturn.Add(0, "answer0");
+            DictionaryToReturn.Add(1, "answer1");
+            DictionaryToReturn.Add(2, "answer2");
+            DictionaryToReturn.Add(3, "answer3");
 
-            tmp = random.Next(0, 4);
+            first = GetIncorectAnswer();
 
-            while (tmp == correctAnswer || tmp == first)
+            while (first == correctAnswer)
             {
-                tmp = random.Next(0, 4);
-            }
-            second = tmp;
-
-            if (first == 0)
-            {
-                firstToReturn = "answer0";
-            }
-            else if (first == 1)
-            {
-                firstToReturn = "answer1";
-            }
-            else if (first == 2)
-            {
-                firstToReturn = "answer2";
-            }
-            else if (first == 3)
-            {
-                firstToReturn = "answer3";
+                first = GetIncorectAnswer();
             }
 
-            if (second == 0)
+            second = GetIncorectAnswer();
+
+            while (second == correctAnswer || second == first)
             {
-                secondToReturn = "answer0";
-            }
-            else if (second == 1)
-            {
-                secondToReturn = "answer1";
-            }
-            else if (second == 2)
-            {
-                secondToReturn = "answer2";
-            }
-            else if (second == 3)
-            {
-                secondToReturn = "answer3";
+                second = GetIncorectAnswer();
             }
 
-            return (firstToReturn, secondToReturn);
+            return (DictionaryToReturn[first], DictionaryToReturn[second]);
         }
 
         public (int First, int Second, int Third, int Fourth) RandomizeHelp()
@@ -174,7 +143,7 @@ namespace Millionare.Model
                 }
                 else if (Correct == Fourth)
                 {
-                    return (First, Second, Correct, Fourth);
+                    return (First, Second, Correct, Third);
                 }
             }
             else if (CurrentLevel.CurrentQuestion.IndexOfCorrectAnswer == 3)
@@ -200,8 +169,9 @@ namespace Millionare.Model
 
         }
 
-        public int GetIncorectAnswer(int correct)
+        public int GetIncorectAnswer()
         {
+            int correct = CurrentLevel.CurrentQuestion.IndexOfCorrectAnswer;
             Random random = new Random();
 
             var res = random.Next(0, 4);
